@@ -128,3 +128,75 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+
+
+# Binaries
+*.exe
+*.dll
+*.so
+*.dylib
+*.out
+*.app
+
+# Compiled object files
+*.o
+*.a
+*.lo
+*.la
+*.lai
+*.rej
+*.gch
+*.pyc
+*.pyo
+*.class
+*.jar
+
+# Go build artifacts
+/bin/
+/pkg/
+/build/
+*.test
+*.prof
+*.cov
+
+# Go modules & dependencies
+go.sum
+go.work
+vendor/
+
+# Beego specific
+logs/
+conf/app.conf
+bee.json
+
+# Fiber specific
+.env
+fiber.log
+
+# Node.js (For React or Vue frontend inside project)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.cache
+
+# IDE and editor files
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.swn
+
+# Docker & CI/CD
+docker-compose.override.yml
+docker-compose.override.yaml
+docker-compose.dev.yml
+*.dockerfile
+.envrc
+*.log
+
+# Misc
+coverage.out
