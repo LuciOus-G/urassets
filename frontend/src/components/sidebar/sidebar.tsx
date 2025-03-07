@@ -3,6 +3,7 @@
 import { CreditCard, LayoutGrid, RefreshCcw, Settings, User, Wallet } from "lucide-react"
 import { useState } from "react"
 import { SidebarItem } from "@/components/sidebar/sidebar-item"
+import {useRouter} from "next/navigation";
 
 interface SidebarProps {
   onNavigate?: (route: string) => void
@@ -10,6 +11,7 @@ interface SidebarProps {
 
 export function Sidebar({ onNavigate }: SidebarProps) {
   const [activeRoute, setActiveRoute] = useState("overview")
+  const router = useRouter()
 
   const handleNavigation = (route: string) => {
     setActiveRoute(route)
@@ -19,32 +21,39 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   }
 
   return (
-    <div className="w-64 bg-white p-6 flex flex-col">
-      <div className="flex items-center mb-10">
-        <h1 className="text-xl font-bold">Menedz___her</h1>
-        <span className="ml-2 text-xs text-white bg-gray-800 px-2 py-0.5 rounded">PRO</span>
+    <div className="w-64 bg-white p-6 flex flex-col relative fixed h-full top-0 left-0 shadow-lg">
+      <div className="flex items-center mb-10 justify-center align-center">
+        <h1 className="text-xl font-bold text-black">UrAssets</h1>
       </div>
 
       <nav className="flex-1 space-y-1">
         <SidebarItem
           icon={LayoutGrid}
-          label="Overview"
-          isActive={activeRoute === "overview"}
-          onClick={() => handleNavigation("overview")}
+          label="Summary"
+          isActive={activeRoute === "summary"}
+          onClick={() => {
+              handleNavigation("summary")
+              router.push("/summary")
+            }
+          }
         />
 
         <SidebarItem
           icon={User}
-          label="Accounts"
+          label="Account"
           isActive={activeRoute === "accounts"}
-          onClick={() => handleNavigation("accounts")}
+          onClick={() => {
+              handleNavigation("accounts")
+              router.push("/accounts")
+            }
+          }
         />
 
         <SidebarItem
           icon={CreditCard}
-          label="Cards"
-          isActive={activeRoute === "cards"}
-          onClick={() => handleNavigation("cards")}
+          label="Bank Accounts"
+          isActive={activeRoute === "bank"}
+          onClick={() => handleNavigation("bank")}
         />
 
         <SidebarItem
@@ -56,9 +65,9 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
         <SidebarItem
           icon={Wallet}
-          label="Exchange"
-          isActive={activeRoute === "exchange"}
-          onClick={() => handleNavigation("exchange")}
+          label="Assets"
+          isActive={activeRoute === "assets"}
+          onClick={() => handleNavigation("assets")}
         />
       </nav>
 
