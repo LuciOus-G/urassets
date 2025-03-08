@@ -14,10 +14,12 @@ export default function App() {
       <div className="bg-green-400 rounded-3xl p-8 mb-4">
         <div className="flex justify-between mb-6">
           <h1 className="text-4xl font-bold text-slate-950">
-            Welcome
-            <br />
-            Back Wilson!
+            Welcome Back <br/> Wilson!
           </h1>
+          <div>
+            <p className={"text-black text-2xl"}>Money Status:</p>
+            <span className={"text-green-900 text-center"}>Excellent!</span>
+          </div>
         </div>
 
         <div className="flex justify-between items-end text-black">

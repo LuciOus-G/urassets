@@ -40,7 +40,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
 
         <SidebarItem
           icon={User}
-          label="Account"
+          label="Profile"
           isActive={activeRoute === "accounts"}
           onClick={() => {
               handleNavigation("accounts")
@@ -53,7 +53,10 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           icon={CreditCard}
           label="Bank Accounts"
           isActive={activeRoute === "bank"}
-          onClick={() => handleNavigation("bank")}
+          onClick={() => {
+            handleNavigation("bank")
+            router.push("/bank-accounts")
+          }}
         />
 
         <SidebarItem
