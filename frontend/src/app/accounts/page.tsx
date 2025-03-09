@@ -2,6 +2,7 @@
 
 import {useState} from "react";
 import MultiSelect from "@/components/multiSelect";
+import {cn} from "@/lib/utils";
 
 export default function Page() {
   const [formData, setFormData] = useState({
@@ -48,7 +49,7 @@ export default function Page() {
         </div>
 
         <div className="grid grid-cols-7 gap-4 my-3">
-          <label htmlFor="confirmPassword" className="text-black">Email: </label>
+          <label htmlFor="confirmPassword" className="text-black">Confirm Password: </label>
           <div className="col-span-6 flex items-center justify-start w-1/2 p-1 bg-white border border-gray-200 rounded-full shadow-sm">
             <input name={"confirmPassword"} onChange={handleOnChangeDefault} type={"password"} id={"confirmPassword"} className="rounded-full w-full p-2 text-black" value={formData.confirmPassword}/>
           </div>
@@ -78,7 +79,7 @@ export default function Page() {
         <div className="grid grid-cols-7 gap-4 my-3">
           <label htmlFor="incomeCategory" className="text-black">Income Category: </label>
           <div className="col-span-6 flex items-center justify-start w-1/2 p-1 bg-white border border-gray-200 rounded-full shadow-sm">
-            <input name={"incomeCategory"} onChange={handleOnChangeDefault} type={"text"} id={"incomeCategory"} className="rounded-full w-full p-2 text-black" value={formData.incomeCategory}/>
+            <MultiSelect BodyClass={cn("bg-white border border-gray-200 text-black rounded-full")}/>
           </div>
         </div>
       </div>

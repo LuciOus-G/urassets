@@ -1,6 +1,6 @@
 "use client"
 
-import { CreditCard, LayoutGrid, RefreshCcw, Settings, User, Wallet } from "lucide-react"
+import { CreditCard, LayoutGrid, RefreshCcw, Goal, Settings, User, Wallet } from "lucide-react"
 import { useState } from "react"
 import { SidebarItem } from "@/components/sidebar/sidebar-item"
 import {useRouter} from "next/navigation";
@@ -60,10 +60,23 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         />
 
         <SidebarItem
+          icon={Goal}
+          label="Goals"
+          isActive={activeRoute === "goals"}
+          onClick={() => {
+            handleNavigation("goals")
+            router.push("")
+          }}
+        />
+
+        <SidebarItem
           icon={RefreshCcw}
           label="Transactions"
           isActive={activeRoute === "transactions"}
-          onClick={() => handleNavigation("transactions")}
+          onClick={() => {
+            handleNavigation("transactions")
+            router.push("/transactions")
+          }}
         />
 
         <SidebarItem
