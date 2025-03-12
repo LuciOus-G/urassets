@@ -2,6 +2,7 @@
 import {Plus, ChevronDown, Pencil} from "lucide-react";
 import Modal from "@/components/modal";
 import {Dispatch, SetStateAction, useState} from "react";
+import {showToast} from "@/components/toast";
 
 type bankList = {
   id: string
@@ -112,6 +113,15 @@ export default function Page() {
     }
     setFormData({ ...formData, [e.target.name]: val });
   };
+
+  // methods
+  const onHandleModalSave = () => {
+    showToast.success("success")
+
+    setTimeout(() => {
+      setIsModalOpen(false); // Close the modal after a short delay
+    }, 10);
+  }
 
   return (
     <div>
@@ -439,7 +449,7 @@ export default function Page() {
             </div>
 
             <div className="flex justify-end align-center pt-5">
-              <button className="bg-green-400 text-green-900 px-4 py-3 rounded-2xl">Save</button>
+              <button type={"button"} onClick={onHandleModalSave} className="bg-green-400 text-green-900 px-4 py-3 rounded-2xl hover:cursor-pointer">Save</button>
             </div>
           </form>
         </Modal>

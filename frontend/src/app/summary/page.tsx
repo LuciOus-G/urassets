@@ -20,18 +20,22 @@ export default function App() {
             Welcome Back <br/> Wilson!
           </h1>
           <div>
-            <p className={"text-black text-2xl"}>Money Status:</p>
+            <p className="text-gray-700 mb-1 text-xl">Total Wealth</p>
+            <h2 className="text-6xl font-bold">$547,197.72</h2>
+          </div>
+          <div>
+            <p className={"text-black text-2xl"}>Money Management:</p>
             <span className={"text-green-900 text-center"}>Excellent!</span>
           </div>
         </div>
 
         <div className="flex justify-between items-end text-black">
           <div>
-            <p className="text-gray-700 mb-1">Total Wealth</p>
-            <h2 className="text-4xl font-bold">$547,197.72</h2>
-          </div>
+          <p className="text-gray-700 mb-1">Current Month Balance</p>
+          <h2 className="text-4xl font-bold">$547,197.72</h2>
+        </div>
           <div>
-            <p className="text-gray-700 mb-1">Total Loan</p>
+            <p className="text-gray-700 mb-1">Current Month Installment</p>
             <h2 className="text-4xl font-bold">$23,456.00</h2>
           </div>
         </div>
