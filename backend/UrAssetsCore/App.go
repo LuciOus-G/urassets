@@ -12,7 +12,7 @@ import (
 	"github.com/lucious/urassets/Utilities"
 )
 
-func RunUserServiceApp(Host string, Port string, DB *sql.DB) {
+func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 	app := fiber.New(fiber.Config{
 		AppName:     "UrAssets",
 		JSONEncoder: json.Marshal,

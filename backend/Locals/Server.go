@@ -17,9 +17,7 @@ type Migration struct {
 }
 
 func (c *Migration) RunServer(DB *sql.DB) {
-	if c.Service == "UserServices" {
-		US.RunUserServiceApp(c.Host, c.Port, DB)
-	}
+	US.UrAssetsCore(c.Host, c.Port, DB)
 }
 
 func (c *Migration) MigrateDatabase(Op string) {

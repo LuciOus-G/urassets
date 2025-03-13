@@ -7,7 +7,6 @@ import (
 	Servers "github.com/lucious/urassets/Locals"
 	DB "github.com/lucious/urassets/Locals/Infra"
 	"os"
-	"slices"
 )
 
 var Help = `Usage: upay -service <service> [COMMANDS] [ARGS]
@@ -60,18 +59,6 @@ func main() {
 		Service: *Service,
 		Host:    *Host,
 		Port:    *Port,
-	}
-
-	if ServersInit.Service == "" {
-		fmt.Println("\n\nfailed to execute commands, service name is empty")
-		fmt.Println(fmt.Sprintf("main %s -service <service> -name <eg: add_table>\n\n", args[0]))
-		flags.PrintDefaults()
-		os.Exit(1)
-	} else if !slices.Contains(choices, ServersInit.Service) {
-		fmt.Println(fmt.Sprintf("\n\nfailed to execute commands, service %s is not exists", ServersInit.Service))
-		fmt.Println(fmt.Sprintf("The choice is %s\n\n", choices))
-		flags.PrintDefaults()
-		os.Exit(1)
 	}
 
 	switch args[0] {
