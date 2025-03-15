@@ -1,0 +1,8 @@
+[psql]
+dbname = "urassets_db"
+host = "34.142.222.209"
+port = 5432
+user = "postgres"
+pass = 'admin!2#'
+sslmode = "disable"
+blacklist = ["migrations"]

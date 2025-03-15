@@ -22,7 +22,7 @@ func (c *Migration) RunServer(DB *sql.DB) {
 
 func (c *Migration) MigrateDatabase(Op string) {
 	cmd := exec.Command("goose", "--table", "public.goose_migrations", "-dir",
-		fmt.Sprintf("%s/infra/db/migrations", c.Service), "postgres", c.Config.ThisDbConfig, Op)
+		fmt.Sprint("UrAssetsCore/migrations"), "postgres", c.Config.ThisDbConfig, Op)
 
 	Out, err := cmd.CombinedOutput()
 	if err != nil {
@@ -32,7 +32,7 @@ func (c *Migration) MigrateDatabase(Op string) {
 }
 
 func (c *Migration) MakeMigrateDatabase(Name string) {
-	cmd := exec.Command("goose", "-dir", fmt.Sprintf("%s/infra/db/migrations", c.Service),
+	cmd := exec.Command("goose", "-dir", fmt.Sprint("UrAssetsCore/migrations"),
 		"create", Name, "sql")
 	Out, err := cmd.CombinedOutput()
 	if err != nil {

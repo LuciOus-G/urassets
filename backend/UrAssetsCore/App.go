@@ -30,11 +30,13 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 		}),
 	}
 
-	ApiV1 := app.Group("/api/ua/v1")
+	Route := app.Group("")
+
+	ApiV1 := Route.Group("/api/ua/v1")
 	ApiV1.Get("/", Handler.UserDetail)
 	ApiV1.Post("/", Handler.UserRegister)
 
-	app.Get("/swagger/*", swagger.HandlerDefault)
+	Route.Get("/swagger/*", swagger.HandlerDefault)
 
 	err := app.Listen(fmt.Sprintf("%s:%s", Host, Port))
 	if err != nil {

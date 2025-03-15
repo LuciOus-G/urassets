@@ -21,14 +21,13 @@ type ConfigField struct {
 func Config() (config ConfigField, err error) {
 	ConfigPath, err := filepath.Abs(".")
 	viper.AddConfigPath(ConfigPath)
-	viper.AddConfigPath("$HOME/.upay")
-	viper.SetConfigName("upay")
-	viper.SetConfigType("env")
+	viper.AddConfigPath("$HOME/.ur/backend")
+	viper.SetConfigFile(".env")
 	viper.AutomaticEnv()
 
 	// External Default Config
 	config.JwtKey = "testtoken"
-	config.DbName = "upay_users_db"
+	config.DbName = "urassets_db"
 
 	err = viper.ReadInConfig()
 	if err != nil {
