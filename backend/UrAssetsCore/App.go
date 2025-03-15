@@ -33,7 +33,7 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 	Route := app.Group("")
 
 	ApiV1 := Route.Group("/api/ua/v1")
-	ApiV1.Get("/", Handler.UserDetail)
+	ApiV1.Post("/login", Handler.UserLogin)
 	ApiV1.Post("/", Handler.UserRegister)
 
 	Route.Get("/swagger/*", swagger.HandlerDefault)

@@ -10,4 +10,5 @@ type UserResponse struct {
 	CreatedAt  null.Time
 	UpdatedAt  null.Time
 	LastUpdate null.Time
+	Token      string
 }

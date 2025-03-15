@@ -19,7 +19,7 @@ type BaseResponse struct {
 }
 
 func (r *BaseResponse) LogManagement() {
-	// Create a new Loki client
+	//Create a new Loki client
 	log := logrus.New()
 
 	lokiHookConfig := &lokihook.Config{
@@ -37,7 +37,6 @@ func (r *BaseResponse) LogManagement() {
 		log.AddHook(hook)
 		r.Log = log
 	}
-	log.Info("test")
 }
 
 func (r *BaseResponse) NotFound() error {
@@ -56,6 +55,20 @@ func (r *BaseResponse) NotFound() error {
 
 func (r *BaseResponse) BadRequest() error {
 	return r.Ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+		"error":       r.Err.Error(),
+		"data":        nil,
+		"status":      fiber.StatusBadRequest,
+		"server_time": time.Now().Unix(),
+		"meta": fiber.Map{
+			"count":      0,
+			"page":       0,
+			"extra_data": r.ExtraData,
+		},
+	})
+}
+
+func (r *BaseResponse) AccessDenied() error {
+	return r.Ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 		"error":       r.Err.Error(),
 		"data":        nil,
 		"status":      fiber.StatusBadRequest,

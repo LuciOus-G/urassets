@@ -3,7 +3,6 @@ package controllers
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
 	"github.com/lucious/urassets/UrAssetsCore/core/Iservice"
@@ -22,9 +21,8 @@ func (h *UrAssetsHandler) UserRegister(ctx *fiber.Ctx) error {
 	// initialize handler
 	h.Response.Ctx = ctx // REQUIRED FOR EVERY HANDLER
 	// end initialize handler
-	request := new(request2.MasterUserRequest)
+	request := new(request2.UserRegisterRequest)
 	if err := Utilities.BodyParse(ctx, request, h.Response); err != nil {
-		fmt.Println(err)
 		h.Response.Err = err
 		return h.Response.BadRequest()
 	}
@@ -32,7 +30,14 @@ func (h *UrAssetsHandler) UserRegister(ctx *fiber.Ctx) error {
 	return h.Service.UserRegister(ctx, request)
 }
 
-func (h *UrAssetsHandler) UserDetail(ctx *fiber.Ctx) error {
+func (h *UrAssetsHandler) UserLogin(ctx *fiber.Ctx) error {
+	h.Response.Ctx = ctx
 
-	return h.Service.UserDetails(ctx)
+	request := new(request2.UserLoginRequest)
+	if err := Utilities.BodyParse(ctx, request, h.Response); err != nil {
+		h.Response.Err = err
+		return h.Response.BadRequest()
+	}
+
+	return h.Service.UserLogin(ctx, request)
 }

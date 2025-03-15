@@ -6,6 +6,6 @@ import (
 )
 
 type IUserJourneyService interface {
-	UserDetails(c *fiber.Ctx) error
-	UserRegister(c *fiber.Ctx, MasterUser *request.MasterUserRequest) error
+	UserLogin(c *fiber.Ctx, userRequest *request.UserLoginRequest) error
+	UserRegister(c *fiber.Ctx, MasterUser *request.UserRegisterRequest) error
 }
