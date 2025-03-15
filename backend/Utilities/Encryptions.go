@@ -17,8 +17,8 @@ func HashPassword(password string) (string, error) {
 	if len(password) == 0 {
 		return password, nil
 	}
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
+	fromPassword, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(fromPassword), err
 }
 
 // PKCS7Padding pads the input to be a multiple of the block size
