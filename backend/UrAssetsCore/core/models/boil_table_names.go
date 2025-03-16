@@ -18,6 +18,7 @@ var TableNames = struct {
 	UserBanks               string
 	UserExpensesCategory    string
 	UserIncomeCategory      string
+	UserSteps               string
 	Users                   string
 }{
 	Banks:                   "banks",
@@ -34,5 +35,6 @@ var TableNames = struct {
 	UserBanks:               "user_banks",
 	UserExpensesCategory:    "user_expenses_category",
 	UserIncomeCategory:      "user_income_category",
+	UserSteps:               "user_steps",
 	Users:                   "users",
 }

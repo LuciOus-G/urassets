@@ -494,6 +494,128 @@ func testUsersInsertWhitelist(t *testing.T) {
 	}
 }
 
+func testUserOneToOneUserStepUsingUserStep(t *testing.T) {
+	ctx := context.Background()
+	tx := MustTx(boil.BeginTx(ctx, nil))
+	defer func() { _ = tx.Rollback() }()
+
+	var foreign UserStep
+	var local User
+
+	seed := randomize.NewSeed()
+	if err := randomize.Struct(seed, &foreign, userStepDBTypes, true, userStepColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize UserStep struct: %s", err)
+	}
+	if err := randomize.Struct(seed, &local, userDBTypes, true, userColumnsWithDefault...); err != nil {
+		t.Errorf("Unable to randomize User struct: %s", err)
+	}
+
+	if err := local.Insert(ctx, tx, boil.Infer()); err != nil {
+		t.Fatal(err)
+	}
+
+	foreign.UserID = local.ID
+	if err := foreign.Insert(ctx, tx, boil.Infer()); err != nil {
+		t.Fatal(err)
+	}
+
+	check, err := local.UserStep().One(ctx, tx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if check.UserID != foreign.UserID {
+		t.Errorf("want: %v, got %v", foreign.UserID, check.UserID)
+	}
+
+	ranAfterSelectHook := false
+	AddUserStepHook(boil.AfterSelectHook, func(ctx context.Context, e boil.ContextExecutor, o *UserStep) error {
+		ranAfterSelectHook = true
+		return nil
+	})
+
+	slice := UserSlice{&local}
+	if err = local.L.LoadUserStep(ctx, tx, false, (*[]*User)(&slice), nil); err != nil {
+		t.Fatal(err)
+	}
+	if local.R.UserStep == nil {
+		t.Error("struct should have been eager loaded")
+	}
+
+	local.R.UserStep = nil
+	if err = local.L.LoadUserStep(ctx, tx, true, &local, nil); err != nil {
+		t.Fatal(err)
+	}
+	if local.R.UserStep == nil {
+		t.Error("struct should have been eager loaded")
+	}
+
+	if !ranAfterSelectHook {
+		t.Error("failed to run AfterSelect hook for relationship")
+	}
+}
+
+func testUserOneToOneSetOpUserStepUsingUserStep(t *testing.T) {
+	var err error
+
+	ctx := context.Background()
+	tx := MustTx(boil.BeginTx(ctx, nil))
+	defer func() { _ = tx.Rollback() }()
+
+	var a User
+	var b, c UserStep
+
+	seed := randomize.NewSeed()
+	if err = randomize.Struct(seed, &a, userDBTypes, false, strmangle.SetComplement(userPrimaryKeyColumns, userColumnsWithoutDefault)...); err != nil {
+		t.Fatal(err)
+	}
+	if err = randomize.Struct(seed, &b, userStepDBTypes, false, strmangle.SetComplement(userStepPrimaryKeyColumns, userStepColumnsWithoutDefault)...); err != nil {
+		t.Fatal(err)
+	}
+	if err = randomize.Struct(seed, &c, userStepDBTypes, false, strmangle.SetComplement(userStepPrimaryKeyColumns, userStepColumnsWithoutDefault)...); err != nil {
+		t.Fatal(err)
+	}
+
+	if err := a.Insert(ctx, tx, boil.Infer()); err != nil {
+		t.Fatal(err)
+	}
+	if err = b.Insert(ctx, tx, boil.Infer()); err != nil {
+		t.Fatal(err)
+	}
+
+	for i, x := range []*UserStep{&b, &c} {
+		err = a.SetUserStep(ctx, tx, i != 0, x)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if a.R.UserStep != x {
+			t.Error("relationship struct not set to correct value")
+		}
+		if x.R.User != &a {
+			t.Error("failed to append to foreign relationship struct")
+		}
+
+		if a.ID != x.UserID {
+			t.Error("foreign key was wrong value", a.ID)
+		}
+
+		if exists, err := UserStepExists(ctx, tx, x.UserID); err != nil {
+			t.Fatal(err)
+		} else if !exists {
+			t.Error("want 'x' to exist")
+		}
+
+		if a.ID != x.UserID {
+			t.Error("foreign key was wrong value", a.ID, x.UserID)
+		}
+
+		if _, err = x.Delete(ctx, tx); err != nil {
+			t.Fatal("failed to delete x", err)
+		}
+	}
+}
+
 func testUserToManyCryptoAssetsHistories(t *testing.T) {
 	var err error
 	ctx := context.Background()

@@ -26,6 +26,7 @@ func TestParent(t *testing.T) {
 	t.Run("UserBanks", testUserBanks)
 	t.Run("UserExpensesCategories", testUserExpensesCategories)
 	t.Run("UserIncomeCategories", testUserIncomeCategories)
+	t.Run("UserSteps", testUserSteps)
 	t.Run("Users", testUsers)
 }
 
@@ -44,6 +45,7 @@ func TestDelete(t *testing.T) {
 	t.Run("UserBanks", testUserBanksDelete)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesDelete)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesDelete)
+	t.Run("UserSteps", testUserStepsDelete)
 	t.Run("Users", testUsersDelete)
 }
 
@@ -62,6 +64,7 @@ func TestQueryDeleteAll(t *testing.T) {
 	t.Run("UserBanks", testUserBanksQueryDeleteAll)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesQueryDeleteAll)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesQueryDeleteAll)
+	t.Run("UserSteps", testUserStepsQueryDeleteAll)
 	t.Run("Users", testUsersQueryDeleteAll)
 }
 
@@ -80,6 +83,7 @@ func TestSliceDeleteAll(t *testing.T) {
 	t.Run("UserBanks", testUserBanksSliceDeleteAll)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesSliceDeleteAll)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesSliceDeleteAll)
+	t.Run("UserSteps", testUserStepsSliceDeleteAll)
 	t.Run("Users", testUsersSliceDeleteAll)
 }
 
@@ -98,6 +102,7 @@ func TestExists(t *testing.T) {
 	t.Run("UserBanks", testUserBanksExists)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesExists)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesExists)
+	t.Run("UserSteps", testUserStepsExists)
 	t.Run("Users", testUsersExists)
 }
 
@@ -116,6 +121,7 @@ func TestFind(t *testing.T) {
 	t.Run("UserBanks", testUserBanksFind)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesFind)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesFind)
+	t.Run("UserSteps", testUserStepsFind)
 	t.Run("Users", testUsersFind)
 }
 
@@ -134,6 +140,7 @@ func TestBind(t *testing.T) {
 	t.Run("UserBanks", testUserBanksBind)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesBind)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesBind)
+	t.Run("UserSteps", testUserStepsBind)
 	t.Run("Users", testUsersBind)
 }
 
@@ -152,6 +159,7 @@ func TestOne(t *testing.T) {
 	t.Run("UserBanks", testUserBanksOne)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesOne)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesOne)
+	t.Run("UserSteps", testUserStepsOne)
 	t.Run("Users", testUsersOne)
 }
 
@@ -170,6 +178,7 @@ func TestAll(t *testing.T) {
 	t.Run("UserBanks", testUserBanksAll)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesAll)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesAll)
+	t.Run("UserSteps", testUserStepsAll)
 	t.Run("Users", testUsersAll)
 }
 
@@ -188,6 +197,7 @@ func TestCount(t *testing.T) {
 	t.Run("UserBanks", testUserBanksCount)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesCount)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesCount)
+	t.Run("UserSteps", testUserStepsCount)
 	t.Run("Users", testUsersCount)
 }
 
@@ -206,6 +216,7 @@ func TestHooks(t *testing.T) {
 	t.Run("UserBanks", testUserBanksHooks)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesHooks)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesHooks)
+	t.Run("UserSteps", testUserStepsHooks)
 	t.Run("Users", testUsersHooks)
 }
 
@@ -238,6 +249,8 @@ func TestInsert(t *testing.T) {
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesInsertWhitelist)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesInsert)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesInsertWhitelist)
+	t.Run("UserSteps", testUserStepsInsert)
+	t.Run("UserSteps", testUserStepsInsertWhitelist)
 	t.Run("Users", testUsersInsert)
 	t.Run("Users", testUsersInsertWhitelist)
 }
@@ -257,6 +270,7 @@ func TestReload(t *testing.T) {
 	t.Run("UserBanks", testUserBanksReload)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesReload)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesReload)
+	t.Run("UserSteps", testUserStepsReload)
 	t.Run("Users", testUsersReload)
 }
 
@@ -275,6 +289,7 @@ func TestReloadAll(t *testing.T) {
 	t.Run("UserBanks", testUserBanksReloadAll)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesReloadAll)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesReloadAll)
+	t.Run("UserSteps", testUserStepsReloadAll)
 	t.Run("Users", testUsersReloadAll)
 }
 
@@ -293,6 +308,7 @@ func TestSelect(t *testing.T) {
 	t.Run("UserBanks", testUserBanksSelect)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesSelect)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesSelect)
+	t.Run("UserSteps", testUserStepsSelect)
 	t.Run("Users", testUsersSelect)
 }
 
@@ -311,6 +327,7 @@ func TestUpdate(t *testing.T) {
 	t.Run("UserBanks", testUserBanksUpdate)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesUpdate)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesUpdate)
+	t.Run("UserSteps", testUserStepsUpdate)
 	t.Run("Users", testUsersUpdate)
 }
 
@@ -329,5 +346,6 @@ func TestSliceUpdateAll(t *testing.T) {
 	t.Run("UserBanks", testUserBanksSliceUpdateAll)
 	t.Run("UserExpensesCategories", testUserExpensesCategoriesSliceUpdateAll)
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesSliceUpdateAll)
+	t.Run("UserSteps", testUserStepsSliceUpdateAll)
 	t.Run("Users", testUsersSliceUpdateAll)
 }

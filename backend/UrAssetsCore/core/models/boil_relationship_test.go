@@ -23,11 +23,14 @@ func TestToOne(t *testing.T) {
 	t.Run("UserBankToUserUsingUser", testUserBankToOneUserUsingUser)
 	t.Run("UserExpensesCategoryToUserUsingUser", testUserExpensesCategoryToOneUserUsingUser)
 	t.Run("UserIncomeCategoryToUserUsingUser", testUserIncomeCategoryToOneUserUsingUser)
+	t.Run("UserStepToUserUsingUser", testUserStepToOneUserUsingUser)
 }
 
 // TestOneToOne tests cannot be run in parallel
 // or deadlocks can occur.
-func TestOneToOne(t *testing.T) {}
+func TestOneToOne(t *testing.T) {
+	t.Run("UserToUserStepUsingUserStep", testUserOneToOneUserStepUsingUserStep)
+}
 
 // TestToMany tests cannot be run in parallel
 // or deadlocks can occur.
@@ -67,6 +70,7 @@ func TestToOneSet(t *testing.T) {
 	t.Run("UserBankToUserUsingUserBanks", testUserBankToOneSetOpUserUsingUser)
 	t.Run("UserExpensesCategoryToUserUsingUserExpensesCategories", testUserExpensesCategoryToOneSetOpUserUsingUser)
 	t.Run("UserIncomeCategoryToUserUsingUserIncomeCategories", testUserIncomeCategoryToOneSetOpUserUsingUser)
+	t.Run("UserStepToUserUsingUserStep", testUserStepToOneSetOpUserUsingUser)
 }
 
 // TestToOneRemove tests cannot be run in parallel
@@ -79,7 +83,9 @@ func TestToOneRemove(t *testing.T) {
 
 // TestOneToOneSet tests cannot be run in parallel
 // or deadlocks can occur.
-func TestOneToOneSet(t *testing.T) {}
+func TestOneToOneSet(t *testing.T) {
+	t.Run("UserToUserStepUsingUserStep", testUserOneToOneSetOpUserStepUsingUserStep)
+}
 
 // TestOneToOneRemove tests cannot be run in parallel
 // or deadlocks can occur.

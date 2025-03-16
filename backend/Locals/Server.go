@@ -21,6 +21,7 @@ func (c *Migration) RunServer(DB *sql.DB) {
 }
 
 func (c *Migration) MigrateDatabase(Op string) {
+	fmt.Println("Running migrations...")
 	cmd := exec.Command("goose", "--table", "public.goose_migrations", "-dir",
 		fmt.Sprint("UrAssetsCore/migrations"), "postgres", c.Config.ThisDbConfig, Op)
 
@@ -29,6 +30,14 @@ func (c *Migration) MigrateDatabase(Op string) {
 		log.Printf("fail %s", err)
 	}
 	fmt.Print(string(Out))
+
+	fmt.Println("Updating the model ... ")
+	cmd = exec.Command("sqlboiler", "psql", "--output", "UrAssetsCore/core/models", "--wipe")
+	Out, err = cmd.CombinedOutput()
+	if err != nil {
+		log.Printf("fail %s", err)
+	}
+	fmt.Println("Complete")
 }
 
 func (c *Migration) MakeMigrateDatabase(Name string) {

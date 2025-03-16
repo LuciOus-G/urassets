@@ -48,6 +48,17 @@ func (srv UserJourneyService) UserRegister(c *fiber.Ctx, MasterUser *request.Use
 		return srvResponse.BadRequest()
 	}
 
+	// create step initialization
+	newUserSteps := models.UserStep{
+		UserID: NewUser.ID,
+	}
+	err = newUserSteps.Insert(srv.Ctx, srv.DB, boil.Infer())
+	if err != nil {
+		srvResponse.Log.Info(err)
+		srvResponse.Err = err
+		return srvResponse.BadRequest()
+	}
+
 	err = copier.Copy(&userResponse, &NewUser)
 	if err != nil {
 		srvResponse.Log.Info(err)

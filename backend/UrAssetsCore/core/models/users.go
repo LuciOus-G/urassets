@@ -102,6 +102,7 @@ var UserWhere = struct {
 
 // UserRels is where relationship names are stored.
 var UserRels = struct {
+	UserStep               string
 	CryptoAssetsHistories  string
 	CryptoAssetsTotals     string
 	CurrentMonthIncomes    string
@@ -112,6 +113,7 @@ var UserRels = struct {
 	UserExpensesCategories string
 	UserIncomeCategories   string
 }{
+	UserStep:               "UserStep",
 	CryptoAssetsHistories:  "CryptoAssetsHistories",
 	CryptoAssetsTotals:     "CryptoAssetsTotals",
 	CurrentMonthIncomes:    "CurrentMonthIncomes",
@@ -125,6 +127,7 @@ var UserRels = struct {
 
 // userR is where relationships are stored.
 type userR struct {
+	UserStep               *UserStep                 `boil:"UserStep" json:"UserStep" toml:"UserStep" yaml:"UserStep"`
 	CryptoAssetsHistories  CryptoAssetsHistorySlice  `boil:"CryptoAssetsHistories" json:"CryptoAssetsHistories" toml:"CryptoAssetsHistories" yaml:"CryptoAssetsHistories"`
 	CryptoAssetsTotals     CryptoAssetsTotalSlice    `boil:"CryptoAssetsTotals" json:"CryptoAssetsTotals" toml:"CryptoAssetsTotals" yaml:"CryptoAssetsTotals"`
 	CurrentMonthIncomes    CurrentMonthIncomeSlice   `boil:"CurrentMonthIncomes" json:"CurrentMonthIncomes" toml:"CurrentMonthIncomes" yaml:"CurrentMonthIncomes"`
@@ -139,6 +142,13 @@ type userR struct {
 // NewStruct creates a new relationship struct
 func (*userR) NewStruct() *userR {
 	return &userR{}
+}
+
+func (r *userR) GetUserStep() *UserStep {
+	if r == nil {
+		return nil
+	}
+	return r.UserStep
 }
 
 func (r *userR) GetCryptoAssetsHistories() CryptoAssetsHistorySlice {
@@ -520,6 +530,17 @@ func (q userQuery) Exists(ctx context.Context, exec boil.ContextExecutor) (bool,
 	return count > 0, nil
 }
 
+// UserStep pointed to by the foreign key.
+func (o *User) UserStep(mods ...qm.QueryMod) userStepQuery {
+	queryMods := []qm.QueryMod{
+		qm.Where("\"user_id\" = ?", o.ID),
+	}
+
+	queryMods = append(queryMods, mods...)
+
+	return UserSteps(queryMods...)
+}
+
 // CryptoAssetsHistories retrieves all the crypto_assets_history's CryptoAssetsHistories with an executor.
 func (o *User) CryptoAssetsHistories(mods ...qm.QueryMod) cryptoAssetsHistoryQuery {
 	var queryMods []qm.QueryMod
@@ -644,6 +665,123 @@ func (o *User) UserIncomeCategories(mods ...qm.QueryMod) userIncomeCategoryQuery
 	)
 
 	return UserIncomeCategories(queryMods...)
+}
+
+// LoadUserStep allows an eager lookup of values, cached into the
+// loaded structs of the objects. This is for a 1-1 relationship.
+func (userL) LoadUserStep(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUser interface{}, mods queries.Applicator) error {
+	var slice []*User
+	var object *User
+
+	if singular {
+		var ok bool
+		object, ok = maybeUser.(*User)
+		if !ok {
+			object = new(User)
+			ok = queries.SetFromEmbeddedStruct(&object, &maybeUser)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", object, maybeUser))
+			}
+		}
+	} else {
+		s, ok := maybeUser.(*[]*User)
+		if ok {
+			slice = *s
+		} else {
+			ok = queries.SetFromEmbeddedStruct(&slice, maybeUser)
+			if !ok {
+				return errors.New(fmt.Sprintf("failed to set %T from embedded struct %T", slice, maybeUser))
+			}
+		}
+	}
+
+	args := make(map[interface{}]struct{})
+	if singular {
+		if object.R == nil {
+			object.R = &userR{}
+		}
+		args[object.ID] = struct{}{}
+	} else {
+		for _, obj := range slice {
+			if obj.R == nil {
+				obj.R = &userR{}
+			}
+
+			args[obj.ID] = struct{}{}
+		}
+	}
+
+	if len(args) == 0 {
+		return nil
+	}
+
+	argsSlice := make([]interface{}, len(args))
+	i := 0
+	for arg := range args {
+		argsSlice[i] = arg
+		i++
+	}
+
+	query := NewQuery(
+		qm.From(`user_steps`),
+		qm.WhereIn(`user_steps.user_id in ?`, argsSlice...),
+	)
+	if mods != nil {
+		mods.Apply(query)
+	}
+
+	results, err := query.QueryContext(ctx, e)
+	if err != nil {
+		return errors.Wrap(err, "failed to eager load UserStep")
+	}
+
+	var resultSlice []*UserStep
+	if err = queries.Bind(results, &resultSlice); err != nil {
+		return errors.Wrap(err, "failed to bind eager loaded slice UserStep")
+	}
+
+	if err = results.Close(); err != nil {
+		return errors.Wrap(err, "failed to close results of eager load for user_steps")
+	}
+	if err = results.Err(); err != nil {
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for user_steps")
+	}
+
+	if len(userStepAfterSelectHooks) != 0 {
+		for _, obj := range resultSlice {
+			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
+				return err
+			}
+		}
+	}
+
+	if len(resultSlice) == 0 {
+		return nil
+	}
+
+	if singular {
+		foreign := resultSlice[0]
+		object.R.UserStep = foreign
+		if foreign.R == nil {
+			foreign.R = &userStepR{}
+		}
+		foreign.R.User = object
+	}
+
+	for _, local := range slice {
+		for _, foreign := range resultSlice {
+			if local.ID == foreign.UserID {
+				local.R.UserStep = foreign
+				if foreign.R == nil {
+					foreign.R = &userStepR{}
+				}
+				foreign.R.User = local
+				break
+			}
+		}
+	}
+
+	return nil
 }
 
 // LoadCryptoAssetsHistories allows an eager lookup of values, cached into the
@@ -1660,6 +1798,56 @@ func (userL) LoadUserIncomeCategories(ctx context.Context, e boil.ContextExecuto
 		}
 	}
 
+	return nil
+}
+
+// SetUserStep of the user to the related item.
+// Sets o.R.UserStep to related.
+// Adds o to related.R.User.
+func (o *User) SetUserStep(ctx context.Context, exec boil.ContextExecutor, insert bool, related *UserStep) error {
+	var err error
+
+	if insert {
+		related.UserID = o.ID
+
+		if err = related.Insert(ctx, exec, boil.Infer()); err != nil {
+			return errors.Wrap(err, "failed to insert into foreign table")
+		}
+	} else {
+		updateQuery := fmt.Sprintf(
+			"UPDATE \"user_steps\" SET %s WHERE %s",
+			strmangle.SetParamNames("\"", "\"", 1, []string{"user_id"}),
+			strmangle.WhereClause("\"", "\"", 2, userStepPrimaryKeyColumns),
+		)
+		values := []interface{}{o.ID, related.UserID}
+
+		if boil.IsDebug(ctx) {
+			writer := boil.DebugWriterFrom(ctx)
+			fmt.Fprintln(writer, updateQuery)
+			fmt.Fprintln(writer, values)
+		}
+		if _, err = exec.ExecContext(ctx, updateQuery, values...); err != nil {
+			return errors.Wrap(err, "failed to update foreign table")
+		}
+
+		related.UserID = o.ID
+	}
+
+	if o.R == nil {
+		o.R = &userR{
+			UserStep: related,
+		}
+	} else {
+		o.R.UserStep = related
+	}
+
+	if related.R == nil {
+		related.R = &userStepR{
+			User: o,
+		}
+	} else {
+		related.R.User = o
+	}
 	return nil
 }
 

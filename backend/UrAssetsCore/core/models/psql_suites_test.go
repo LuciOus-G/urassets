@@ -34,5 +34,7 @@ func TestUpsert(t *testing.T) {
 
 	t.Run("UserIncomeCategories", testUserIncomeCategoriesUpsert)
 
+	t.Run("UserSteps", testUserStepsUpsert)
+
 	t.Run("Users", testUsersUpsert)
 }
