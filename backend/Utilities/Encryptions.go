@@ -10,9 +10,11 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/argon2"
 	"io"
 	"strings"
+	"time"
 )
 
 const (
@@ -22,6 +24,17 @@ const (
 	keyLength = 32
 	saltSize  = 16
 )
+
+func GenerateJWT(userID string) (string, error) {
+	// Define token claims
+	claims := jwt.MapClaims{
+		"user_id": userID,
+		"exp":     time.Now().Add(time.Hour * 2).Unix(),
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte("your-secret-key"))
+}
 
 func HashPassword(password string) (string, error) {
 	salt := make([]byte, saltSize)

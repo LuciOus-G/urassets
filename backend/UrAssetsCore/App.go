@@ -5,12 +5,35 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/goccy/go-json"
+	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/lucious/urassets/UrAssetsCore/controllers"
 	"github.com/lucious/urassets/UrAssetsCore/core/service"
 	"github.com/lucious/urassets/Utilities"
+	"log"
 )
+
+func JWTMiddleware() fiber.Handler {
+	return jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{Key: []byte("your-secret-key")},
+		ErrorHandler: func(c *fiber.Ctx, err error) error {
+			log.Println("JWT Authentication failed:", err)
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Unauthorized"})
+		},
+	})
+}
+
+func ExtractUserID(c *fiber.Ctx) (string, error) {
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	userID, ok := claims["user_id"].(string)
+	if !ok {
+		return "", fiber.ErrUnauthorized
+	}
+	return userID, nil
+}
 
 func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 	app := fiber.New(fiber.Config{
@@ -35,7 +58,7 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 	ApiV1 := Route.Group("/api/ua/v1")
 
 	userAPI := ApiV1.Group("/user")
-	userAPI.Get("/:id", Handler.UserDetail)
+	userAPI.Get("/:id", JWTMiddleware(), Handler.UserDetail)
 	userAPI.Post("/login", Handler.UserLogin)
 	userAPI.Post("/register", Handler.UserRegister)
 

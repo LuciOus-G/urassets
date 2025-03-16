@@ -123,8 +123,16 @@ func (srv Services) UserLogin(c *fiber.Ctx, userRequest *request.UserLoginReques
 		return srvResponse.BadRequest()
 	}
 
+	token, err := Utilities.GenerateJWT(userResponse.ID)
+	if err != nil {
+		srvResponse.Log.Info(err)
+		srvResponse.Err = err
+		return srvResponse.BadRequest()
+	}
+
 	// bind the relationship
 	userResponse.UserJourney = userDetail.R.UserStep
+	userResponse.Token = token
 
 	srvResponse.Data = userResponse
 	srvResponse.Status = fiber.StatusOK
