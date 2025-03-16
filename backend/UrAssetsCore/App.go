@@ -34,14 +34,18 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 
 	ApiV1 := Route.Group("/api/ua/v1")
 
-	UserAPI := ApiV1.Group("/user")
-	UserAPI.Get("/:id", Handler.UserDetail)
-	UserAPI.Post("/login", Handler.UserLogin)
-	UserAPI.Post("/register", Handler.UserRegister)
+	userAPI := ApiV1.Group("/user")
+	userAPI.Get("/:id", Handler.UserDetail)
+	userAPI.Post("/login", Handler.UserLogin)
+	userAPI.Post("/register", Handler.UserRegister)
 
-	UserCategoryAPI := ApiV1.Group("/user-category")
-	UserCategoryAPI.Post("/add/income", Handler.PostUserCategoriesIncome)
-	UserCategoryAPI.Post("/add/expenses", Handler.PostUserCategoriesExpenses)
+	userCategoryAPI := ApiV1.Group("/user-category")
+	userCategoryAPI.Post("/add/income", Handler.PostUserCategoriesIncome)
+	userCategoryAPI.Post("/add/expenses", Handler.PostUserCategoriesExpenses)
+
+	banksAPI := ApiV1.Group("/banks")
+	banksAPI.Get("/", Handler.GetBankList)
+	banksAPI.Post("/add/user-banks", Handler.PostUserBanks)
 
 	Route.Get("/swagger/*", swagger.HandlerDefault)
 
