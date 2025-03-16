@@ -40,7 +40,8 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 	UserAPI.Post("/register", Handler.UserRegister)
 
 	UserCategoryAPI := ApiV1.Group("/user-category")
-	UserCategoryAPI.Post("/add/income", Handler.PostUserCategories)
+	UserCategoryAPI.Post("/add/income", Handler.PostUserCategoriesIncome)
+	UserCategoryAPI.Post("/add/expenses", Handler.PostUserCategoriesExpenses)
 
 	Route.Get("/swagger/*", swagger.HandlerDefault)
 

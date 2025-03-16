@@ -6,5 +6,5 @@ import (
 )
 
 type IUserCategoryServices interface {
-	PostIncomeCategories(c *fiber.Ctx, request *request2.UserCategoriesIncomeRequests) error
+	PostUserCategories(c *fiber.Ctx, request *request2.UserCategoriesRequests, recordType int) error
 }

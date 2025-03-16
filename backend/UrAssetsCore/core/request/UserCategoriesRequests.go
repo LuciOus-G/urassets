@@ -1,6 +1,6 @@
 package request
 
-type UserCategoriesIncomeRequests struct {
+type UserCategoriesRequests struct {
 	UserId string `validate:"required"`
 	Name   string `validate:"required"`
 }
