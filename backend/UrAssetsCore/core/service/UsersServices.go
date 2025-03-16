@@ -64,7 +64,10 @@ func (srv Services) UserLogin(c *fiber.Ctx, userRequest *request.UserLoginReques
 	srvResponse := Utilities.NewResponse(Utilities.BaseResponse{Ctx: c})
 	userResponse := response.UserResponse{}
 
-	userDetail, err := models.Users(qm.Where("email = ?", userRequest.Email)).One(srv.Ctx, srv.DB)
+	userDetail, err := models.Users(
+		qm.Where("email = ?", userRequest.Email),
+		qm.Load("UserStep"),
+	).One(srv.Ctx, srv.DB)
 	if err != nil {
 		srvResponse.Err = fmt.Errorf("email not found")
 		return srvResponse.NotFound()
@@ -89,6 +92,9 @@ func (srv Services) UserLogin(c *fiber.Ctx, userRequest *request.UserLoginReques
 		srvResponse.Err = err
 		return srvResponse.BadRequest()
 	}
+
+	// bind the relationship
+	userResponse.UserJourney = userDetail.R.UserStep
 
 	srvResponse.Data = userResponse
 	srvResponse.Status = fiber.StatusOK

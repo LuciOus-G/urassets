@@ -33,6 +33,7 @@ type User struct {
 	CreatedAt  null.Time `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
 	UpdatedAt  null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
 	LastUpdate null.Time `boil:"last_update" json:"last_update,omitempty" toml:"last_update" yaml:"last_update,omitempty"`
+	PayDate    null.Time `boil:"pay_date" json:"pay_date,omitempty" toml:"pay_date" yaml:"pay_date,omitempty"`
 
 	R *userR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -47,6 +48,7 @@ var UserColumns = struct {
 	CreatedAt  string
 	UpdatedAt  string
 	LastUpdate string
+	PayDate    string
 }{
 	ID:         "id",
 	FullName:   "full_name",
@@ -56,6 +58,7 @@ var UserColumns = struct {
 	CreatedAt:  "created_at",
 	UpdatedAt:  "updated_at",
 	LastUpdate: "last_update",
+	PayDate:    "pay_date",
 }
 
 var UserTableColumns = struct {
@@ -67,6 +70,7 @@ var UserTableColumns = struct {
 	CreatedAt  string
 	UpdatedAt  string
 	LastUpdate string
+	PayDate    string
 }{
 	ID:         "users.id",
 	FullName:   "users.full_name",
@@ -76,6 +80,7 @@ var UserTableColumns = struct {
 	CreatedAt:  "users.created_at",
 	UpdatedAt:  "users.updated_at",
 	LastUpdate: "users.last_update",
+	PayDate:    "users.pay_date",
 }
 
 // Generated where
@@ -89,6 +94,7 @@ var UserWhere = struct {
 	CreatedAt  whereHelpernull_Time
 	UpdatedAt  whereHelpernull_Time
 	LastUpdate whereHelpernull_Time
+	PayDate    whereHelpernull_Time
 }{
 	ID:         whereHelperstring{field: "\"users\".\"id\""},
 	FullName:   whereHelperstring{field: "\"users\".\"full_name\""},
@@ -98,6 +104,7 @@ var UserWhere = struct {
 	CreatedAt:  whereHelpernull_Time{field: "\"users\".\"created_at\""},
 	UpdatedAt:  whereHelpernull_Time{field: "\"users\".\"updated_at\""},
 	LastUpdate: whereHelpernull_Time{field: "\"users\".\"last_update\""},
+	PayDate:    whereHelpernull_Time{field: "\"users\".\"pay_date\""},
 }
 
 // UserRels is where relationship names are stored.
@@ -218,9 +225,9 @@ func (r *userR) GetUserIncomeCategories() UserIncomeCategorySlice {
 type userL struct{}
 
 var (
-	userAllColumns            = []string{"id", "full_name", "email", "password", "is_active", "created_at", "updated_at", "last_update"}
+	userAllColumns            = []string{"id", "full_name", "email", "password", "is_active", "created_at", "updated_at", "last_update", "pay_date"}
 	userColumnsWithoutDefault = []string{"full_name", "email", "password"}
-	userColumnsWithDefault    = []string{"id", "is_active", "created_at", "updated_at", "last_update"}
+	userColumnsWithDefault    = []string{"id", "is_active", "created_at", "updated_at", "last_update", "pay_date"}
 	userPrimaryKeyColumns     = []string{"id"}
 	userGeneratedColumns      = []string{}
 )
