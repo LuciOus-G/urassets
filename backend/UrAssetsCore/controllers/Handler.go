@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	_ "github.com/lib/pq"
 	"github.com/lucious/urassets/UrAssetsCore/core/Iservice"
@@ -40,4 +41,15 @@ func (h *UrAssetsHandler) UserLogin(ctx *fiber.Ctx) error {
 	}
 
 	return h.Service.UserLogin(ctx, request)
+}
+
+func (h *UrAssetsHandler) UserDetail(ctx *fiber.Ctx) error {
+	h.Response.Ctx = ctx
+
+	if ctx.Params("id") == "" {
+		h.Response.Err = fmt.Errorf("id is required")
+		return h.Response.BadRequest()
+	}
+
+	return h.Service.UserDetail(ctx)
 }

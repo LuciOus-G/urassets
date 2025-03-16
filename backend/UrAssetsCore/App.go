@@ -3,8 +3,8 @@ package UrAssetsCore
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
+	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/swagger"
 	"github.com/lucious/urassets/UrAssetsCore/controllers"
@@ -33,6 +33,7 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 	Route := app.Group("")
 
 	ApiV1 := Route.Group("/api/ua/v1")
+	ApiV1.Get("/user/:id", Handler.UserDetail)
 	ApiV1.Post("/login", Handler.UserLogin)
 	ApiV1.Post("/", Handler.UserRegister)
 

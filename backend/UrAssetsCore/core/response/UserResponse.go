@@ -1,6 +1,9 @@
 package response
 
-import "github.com/volatiletech/null/v8"
+import (
+	"github.com/lucious/urassets/UrAssetsCore/core/models"
+	"github.com/volatiletech/null/v8"
+)
 
 type UserResponse struct {
 	ID         string
@@ -11,4 +14,10 @@ type UserResponse struct {
 	UpdatedAt  null.Time
 	LastUpdate null.Time
 	Token      string
+}
+
+type UserDetailResponse struct {
+	User             *models.User
+	IncomeCategory   []*models.UserIncomeCategory
+	ExpensesCategory []*models.UserExpensesCategory
 }

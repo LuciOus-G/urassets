@@ -107,3 +107,27 @@ func (srv UserJourneyService) UserLogin(c *fiber.Ctx, userRequest *request.UserL
 
 	return srvResponse.OK()
 }
+
+func (srv UserJourneyService) UserDetail(c *fiber.Ctx) error {
+	srvResponse := Utilities.NewResponse(Utilities.BaseResponse{Ctx: c})
+
+	user, err := models.Users(
+		qm.Where("id = ?", c.Params("id")),
+		qm.Load("UserIncomeCategories"),
+		qm.Load("UserExpensesCategories"),
+	).One(srv.Ctx, srv.DB)
+	if err != nil {
+		srvResponse.Err = fmt.Errorf("user not found")
+		return srvResponse.NotFound()
+	}
+
+	srvResponse.Data = response.UserDetailResponse{
+		User:             user,
+		IncomeCategory:   user.R.UserIncomeCategories,
+		ExpensesCategory: user.R.UserExpensesCategories,
+	}
+	srvResponse.Status = fiber.StatusOK
+
+	return srvResponse.OK()
+
+}
