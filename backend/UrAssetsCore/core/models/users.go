@@ -28,7 +28,7 @@ type User struct {
 	ID         string    `boil:"id" json:"id" toml:"id" yaml:"id"`
 	FullName   string    `boil:"full_name" json:"full_name" toml:"full_name" yaml:"full_name"`
 	Email      string    `boil:"email" json:"email" toml:"email" yaml:"email"`
-	Password   string    `boil:"password" json:"-" toml:"-" yaml:"-"`
+	Password   string    `boil:"password" json:"password" toml:"password" yaml:"password"`
 	IsActive   null.Bool `boil:"is_active" json:"is_active,omitempty" toml:"is_active" yaml:"is_active,omitempty"`
 	CreatedAt  null.Time `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
 	UpdatedAt  null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`

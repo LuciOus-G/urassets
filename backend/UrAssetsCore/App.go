@@ -24,7 +24,7 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 		DB:       DB,
 		Ctx:      ctx,
 		Response: Utilities.NewResponse(Utilities.BaseResponse{}),
-		Service: service.NewUserJourneyService(service.UserJourneyService{
+		Service: service.Interfaces(service.Services{
 			Ctx: ctx,
 			DB:  DB,
 		}),
@@ -33,9 +33,14 @@ func UrAssetsCore(Host string, Port string, DB *sql.DB) {
 	Route := app.Group("")
 
 	ApiV1 := Route.Group("/api/ua/v1")
-	ApiV1.Get("/user/:id", Handler.UserDetail)
-	ApiV1.Post("/login", Handler.UserLogin)
-	ApiV1.Post("/", Handler.UserRegister)
+
+	UserAPI := ApiV1.Group("/user")
+	UserAPI.Get("/:id", Handler.UserDetail)
+	UserAPI.Post("/login", Handler.UserLogin)
+	UserAPI.Post("/register", Handler.UserRegister)
+
+	UserCategoryAPI := ApiV1.Group("/user-category")
+	UserCategoryAPI.Post("/add/income", Handler.PostUserCategories)
 
 	Route.Get("/swagger/*", swagger.HandlerDefault)
 

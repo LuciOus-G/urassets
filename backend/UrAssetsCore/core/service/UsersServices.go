@@ -1,12 +1,9 @@
 package service
 
 import (
-	"context"
-	"database/sql"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
-	"github.com/lucious/urassets/UrAssetsCore/core/Iservice"
 	"github.com/lucious/urassets/UrAssetsCore/core/models"
 	"github.com/lucious/urassets/UrAssetsCore/core/request"
 	"github.com/lucious/urassets/UrAssetsCore/core/response"
@@ -15,16 +12,7 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 )
 
-type UserJourneyService struct {
-	Ctx context.Context
-	DB  *sql.DB
-}
-
-func NewUserJourneyService(init ...UserJourneyService) Iservice.IUserJourneyService {
-	return Iservice.IUserJourneyService(init[0])
-}
-
-func (srv UserJourneyService) UserRegister(c *fiber.Ctx, MasterUser *request.UserRegisterRequest) (err error) {
+func (srv Services) UserRegister(c *fiber.Ctx, MasterUser *request.UserRegisterRequest) (err error) {
 	srvResponse := Utilities.NewResponse(Utilities.BaseResponse{Ctx: c})
 	userResponse := response.UserResponse{}
 
@@ -72,7 +60,7 @@ func (srv UserJourneyService) UserRegister(c *fiber.Ctx, MasterUser *request.Use
 	return srvResponse.OK()
 }
 
-func (srv UserJourneyService) UserLogin(c *fiber.Ctx, userRequest *request.UserLoginRequest) error {
+func (srv Services) UserLogin(c *fiber.Ctx, userRequest *request.UserLoginRequest) error {
 	srvResponse := Utilities.NewResponse(Utilities.BaseResponse{Ctx: c})
 	userResponse := response.UserResponse{}
 
@@ -108,8 +96,9 @@ func (srv UserJourneyService) UserLogin(c *fiber.Ctx, userRequest *request.UserL
 	return srvResponse.OK()
 }
 
-func (srv UserJourneyService) UserDetail(c *fiber.Ctx) error {
+func (srv Services) UserDetail(c *fiber.Ctx) error {
 	srvResponse := Utilities.NewResponse(Utilities.BaseResponse{Ctx: c})
+	userResponse := response.UserDetailResponse{}
 
 	user, err := models.Users(
 		qm.Where("id = ?", c.Params("id")),
@@ -121,11 +110,18 @@ func (srv UserJourneyService) UserDetail(c *fiber.Ctx) error {
 		return srvResponse.NotFound()
 	}
 
-	srvResponse.Data = response.UserDetailResponse{
-		User:             user,
-		IncomeCategory:   user.R.UserIncomeCategories,
-		ExpensesCategory: user.R.UserExpensesCategories,
+	err = copier.Copy(&userResponse, &user)
+	if err != nil {
+		srvResponse.Log.Info(err)
+		srvResponse.Err = err
+		return srvResponse.BadRequest()
 	}
+
+	// bind the relationship into response
+	userResponse.IncomeCategories = user.R.UserIncomeCategories
+	userResponse.ExpensesCategories = user.R.UserExpensesCategories
+
+	srvResponse.Data = userResponse
 	srvResponse.Status = fiber.StatusOK
 
 	return srvResponse.OK()

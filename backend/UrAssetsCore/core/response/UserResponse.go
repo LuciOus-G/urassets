@@ -17,7 +17,8 @@ type UserResponse struct {
 }
 
 type UserDetailResponse struct {
-	User             *models.User
-	IncomeCategory   []*models.UserIncomeCategory
-	ExpensesCategory []*models.UserExpensesCategory
+	*models.User
+	Password           string `copier:"-"`
+	IncomeCategories   []*models.UserIncomeCategory
+	ExpensesCategories []*models.UserExpensesCategory
 }
