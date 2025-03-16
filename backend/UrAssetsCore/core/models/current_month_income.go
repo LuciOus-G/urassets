@@ -25,94 +25,72 @@ import (
 
 // CurrentMonthIncome is an object representing the database table.
 type CurrentMonthIncome struct {
-	// Auto Generate UUID V4
-	ID          string        `boil:"id" json:"id" toml:"id" yaml:"id"`
 	BankUserID  string        `boil:"bank_user_id" json:"bank_user_id" toml:"bank_user_id" yaml:"bank_user_id"`
 	UserID      string        `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
 	Amount      types.Decimal `boil:"amount" json:"amount" toml:"amount" yaml:"amount"`
-	PeriodMonth time.Time     `boil:"period_month" json:"period_month" toml:"period_month" yaml:"period_month"`
-	IsPayed     null.Bool     `boil:"is_payed" json:"is_payed,omitempty" toml:"is_payed" yaml:"is_payed,omitempty"`
-	Name        string        `boil:"name" json:"name" toml:"name" yaml:"name"`
+	PeriodMonth null.Time     `boil:"period_month" json:"period_month,omitempty" toml:"period_month" yaml:"period_month,omitempty"`
+	Type        null.String   `boil:"type" json:"type,omitempty" toml:"type" yaml:"type,omitempty"`
+	Name        null.String   `boil:"name" json:"name,omitempty" toml:"name" yaml:"name,omitempty"`
+	ID          string        `boil:"id" json:"id" toml:"id" yaml:"id"`
 
 	R *currentMonthIncomeR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L currentMonthIncomeL  `boil:"-" json:"-" toml:"-" yaml:"-"`
 }
 
 var CurrentMonthIncomeColumns = struct {
-	ID          string
 	BankUserID  string
 	UserID      string
 	Amount      string
 	PeriodMonth string
-	IsPayed     string
+	Type        string
 	Name        string
+	ID          string
 }{
-	ID:          "id",
 	BankUserID:  "bank_user_id",
 	UserID:      "user_id",
 	Amount:      "amount",
 	PeriodMonth: "period_month",
-	IsPayed:     "is_payed",
+	Type:        "type",
 	Name:        "name",
+	ID:          "id",
 }
 
 var CurrentMonthIncomeTableColumns = struct {
-	ID          string
 	BankUserID  string
 	UserID      string
 	Amount      string
 	PeriodMonth string
-	IsPayed     string
+	Type        string
 	Name        string
+	ID          string
 }{
-	ID:          "current_month_income.id",
 	BankUserID:  "current_month_income.bank_user_id",
 	UserID:      "current_month_income.user_id",
 	Amount:      "current_month_income.amount",
 	PeriodMonth: "current_month_income.period_month",
-	IsPayed:     "current_month_income.is_payed",
+	Type:        "current_month_income.type",
 	Name:        "current_month_income.name",
+	ID:          "current_month_income.id",
 }
 
 // Generated where
 
-type whereHelpertime_Time struct{ field string }
-
-func (w whereHelpertime_Time) EQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.EQ, x)
-}
-func (w whereHelpertime_Time) NEQ(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.NEQ, x)
-}
-func (w whereHelpertime_Time) LT(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LT, x)
-}
-func (w whereHelpertime_Time) LTE(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.LTE, x)
-}
-func (w whereHelpertime_Time) GT(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GT, x)
-}
-func (w whereHelpertime_Time) GTE(x time.Time) qm.QueryMod {
-	return qmhelper.Where(w.field, qmhelper.GTE, x)
-}
-
 var CurrentMonthIncomeWhere = struct {
-	ID          whereHelperstring
 	BankUserID  whereHelperstring
 	UserID      whereHelperstring
 	Amount      whereHelpertypes_Decimal
-	PeriodMonth whereHelpertime_Time
-	IsPayed     whereHelpernull_Bool
-	Name        whereHelperstring
+	PeriodMonth whereHelpernull_Time
+	Type        whereHelpernull_String
+	Name        whereHelpernull_String
+	ID          whereHelperstring
 }{
-	ID:          whereHelperstring{field: "\"current_month_income\".\"id\""},
 	BankUserID:  whereHelperstring{field: "\"current_month_income\".\"bank_user_id\""},
 	UserID:      whereHelperstring{field: "\"current_month_income\".\"user_id\""},
 	Amount:      whereHelpertypes_Decimal{field: "\"current_month_income\".\"amount\""},
-	PeriodMonth: whereHelpertime_Time{field: "\"current_month_income\".\"period_month\""},
-	IsPayed:     whereHelpernull_Bool{field: "\"current_month_income\".\"is_payed\""},
-	Name:        whereHelperstring{field: "\"current_month_income\".\"name\""},
+	PeriodMonth: whereHelpernull_Time{field: "\"current_month_income\".\"period_month\""},
+	Type:        whereHelpernull_String{field: "\"current_month_income\".\"type\""},
+	Name:        whereHelpernull_String{field: "\"current_month_income\".\"name\""},
+	ID:          whereHelperstring{field: "\"current_month_income\".\"id\""},
 }
 
 // CurrentMonthIncomeRels is where relationship names are stored.
@@ -153,9 +131,9 @@ func (r *currentMonthIncomeR) GetUser() *User {
 type currentMonthIncomeL struct{}
 
 var (
-	currentMonthIncomeAllColumns            = []string{"id", "bank_user_id", "user_id", "amount", "period_month", "is_payed", "name"}
-	currentMonthIncomeColumnsWithoutDefault = []string{"bank_user_id", "user_id", "amount", "period_month", "name"}
-	currentMonthIncomeColumnsWithDefault    = []string{"id", "is_payed"}
+	currentMonthIncomeAllColumns            = []string{"bank_user_id", "user_id", "amount", "period_month", "type", "name", "id"}
+	currentMonthIncomeColumnsWithoutDefault = []string{"bank_user_id", "user_id", "amount"}
+	currentMonthIncomeColumnsWithDefault    = []string{"period_month", "type", "name", "id"}
 	currentMonthIncomePrimaryKeyColumns     = []string{"id"}
 	currentMonthIncomeGeneratedColumns      = []string{}
 )

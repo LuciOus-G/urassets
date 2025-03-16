@@ -494,14 +494,14 @@ func testUserBanksInsertWhitelist(t *testing.T) {
 	}
 }
 
-func testUserBankToManyBankUserCurrentMonthBalances(t *testing.T) {
+func testUserBankToManyBankUserCurrentMonthBills(t *testing.T) {
 	var err error
 	ctx := context.Background()
 	tx := MustTx(boil.BeginTx(ctx, nil))
 	defer func() { _ = tx.Rollback() }()
 
 	var a UserBank
-	var b, c CurrentMonthBalance
+	var b, c CurrentMonthBill
 
 	seed := randomize.NewSeed()
 	if err = randomize.Struct(seed, &a, userBankDBTypes, true, userBankColumnsWithDefault...); err != nil {
@@ -512,15 +512,15 @@ func testUserBankToManyBankUserCurrentMonthBalances(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if err = randomize.Struct(seed, &b, currentMonthBalanceDBTypes, false, currentMonthBalanceColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &b, currentMonthBillDBTypes, false, currentMonthBillColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
-	if err = randomize.Struct(seed, &c, currentMonthBalanceDBTypes, false, currentMonthBalanceColumnsWithDefault...); err != nil {
+	if err = randomize.Struct(seed, &c, currentMonthBillDBTypes, false, currentMonthBillColumnsWithDefault...); err != nil {
 		t.Fatal(err)
 	}
 
-	b.BankUsersID = a.ID
-	c.BankUsersID = a.ID
+	b.BankUserID = a.ID
+	c.BankUserID = a.ID
 
 	if err = b.Insert(ctx, tx, boil.Infer()); err != nil {
 		t.Fatal(err)
@@ -529,17 +529,17 @@ func testUserBankToManyBankUserCurrentMonthBalances(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	check, err := a.BankUserCurrentMonthBalances().All(ctx, tx)
+	check, err := a.BankUserCurrentMonthBills().All(ctx, tx)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	bFound, cFound := false, false
 	for _, v := range check {
-		if v.BankUsersID == b.BankUsersID {
+		if v.BankUserID == b.BankUserID {
 			bFound = true
 		}
-		if v.BankUsersID == c.BankUsersID {
+		if v.BankUserID == c.BankUserID {
 			cFound = true
 		}
 	}
@@ -552,18 +552,18 @@ func testUserBankToManyBankUserCurrentMonthBalances(t *testing.T) {
 	}
 
 	slice := UserBankSlice{&a}
-	if err = a.L.LoadBankUserCurrentMonthBalances(ctx, tx, false, (*[]*UserBank)(&slice), nil); err != nil {
+	if err = a.L.LoadBankUserCurrentMonthBills(ctx, tx, false, (*[]*UserBank)(&slice), nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.BankUserCurrentMonthBalances); got != 2 {
+	if got := len(a.R.BankUserCurrentMonthBills); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
-	a.R.BankUserCurrentMonthBalances = nil
-	if err = a.L.LoadBankUserCurrentMonthBalances(ctx, tx, true, &a, nil); err != nil {
+	a.R.BankUserCurrentMonthBills = nil
+	if err = a.L.LoadBankUserCurrentMonthBills(ctx, tx, true, &a, nil); err != nil {
 		t.Fatal(err)
 	}
-	if got := len(a.R.BankUserCurrentMonthBalances); got != 2 {
+	if got := len(a.R.BankUserCurrentMonthBills); got != 2 {
 		t.Error("number of eager loaded records wrong, got:", got)
 	}
 
@@ -804,7 +804,7 @@ func testUserBankToManyToBankTransactions(t *testing.T) {
 	}
 }
 
-func testUserBankToManyAddOpBankUserCurrentMonthBalances(t *testing.T) {
+func testUserBankToManyAddOpBankUserCurrentMonthBills(t *testing.T) {
 	var err error
 
 	ctx := context.Background()
@@ -812,15 +812,15 @@ func testUserBankToManyAddOpBankUserCurrentMonthBalances(t *testing.T) {
 	defer func() { _ = tx.Rollback() }()
 
 	var a UserBank
-	var b, c, d, e CurrentMonthBalance
+	var b, c, d, e CurrentMonthBill
 
 	seed := randomize.NewSeed()
 	if err = randomize.Struct(seed, &a, userBankDBTypes, false, strmangle.SetComplement(userBankPrimaryKeyColumns, userBankColumnsWithoutDefault)...); err != nil {
 		t.Fatal(err)
 	}
-	foreigners := []*CurrentMonthBalance{&b, &c, &d, &e}
+	foreigners := []*CurrentMonthBill{&b, &c, &d, &e}
 	for _, x := range foreigners {
-		if err = randomize.Struct(seed, x, currentMonthBalanceDBTypes, false, strmangle.SetComplement(currentMonthBalancePrimaryKeyColumns, currentMonthBalanceColumnsWithoutDefault)...); err != nil {
+		if err = randomize.Struct(seed, x, currentMonthBillDBTypes, false, strmangle.SetComplement(currentMonthBillPrimaryKeyColumns, currentMonthBillColumnsWithoutDefault)...); err != nil {
 			t.Fatal(err)
 		}
 	}
@@ -835,13 +835,13 @@ func testUserBankToManyAddOpBankUserCurrentMonthBalances(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	foreignersSplitByInsertion := [][]*CurrentMonthBalance{
+	foreignersSplitByInsertion := [][]*CurrentMonthBill{
 		{&b, &c},
 		{&d, &e},
 	}
 
 	for i, x := range foreignersSplitByInsertion {
-		err = a.AddBankUserCurrentMonthBalances(ctx, tx, i != 0, x...)
+		err = a.AddBankUserCurrentMonthBills(ctx, tx, i != 0, x...)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -849,11 +849,11 @@ func testUserBankToManyAddOpBankUserCurrentMonthBalances(t *testing.T) {
 		first := x[0]
 		second := x[1]
 
-		if a.ID != first.BankUsersID {
-			t.Error("foreign key was wrong value", a.ID, first.BankUsersID)
+		if a.ID != first.BankUserID {
+			t.Error("foreign key was wrong value", a.ID, first.BankUserID)
 		}
-		if a.ID != second.BankUsersID {
-			t.Error("foreign key was wrong value", a.ID, second.BankUsersID)
+		if a.ID != second.BankUserID {
+			t.Error("foreign key was wrong value", a.ID, second.BankUserID)
 		}
 
 		if first.R.BankUser != &a {
@@ -863,14 +863,14 @@ func testUserBankToManyAddOpBankUserCurrentMonthBalances(t *testing.T) {
 			t.Error("relationship was not added properly to the foreign slice")
 		}
 
-		if a.R.BankUserCurrentMonthBalances[i*2] != first {
+		if a.R.BankUserCurrentMonthBills[i*2] != first {
 			t.Error("relationship struct slice not set to correct value")
 		}
-		if a.R.BankUserCurrentMonthBalances[i*2+1] != second {
+		if a.R.BankUserCurrentMonthBills[i*2+1] != second {
 			t.Error("relationship struct slice not set to correct value")
 		}
 
-		count, err := a.BankUserCurrentMonthBalances().Count(ctx, tx)
+		count, err := a.BankUserCurrentMonthBills().Count(ctx, tx)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1767,7 +1767,7 @@ func testUserBanksSelect(t *testing.T) {
 }
 
 var (
-	userBankDBTypes = map[string]string{`ID`: `uuid`, `BankID`: `uuid`, `UserID`: `uuid`, `CreatedAt`: `timestamp with time zone`, `UpdatedAt`: `timestamp with time zone`, `IsActive`: `boolean`}
+	userBankDBTypes = map[string]string{`ID`: `uuid`, `BankID`: `uuid`, `UserID`: `uuid`, `CreatedAt`: `timestamp with time zone`, `UpdatedAt`: `timestamp with time zone`, `IsActive`: `boolean`, `Balance`: `numeric`}
 	_               = bytes.MinRead
 )
 

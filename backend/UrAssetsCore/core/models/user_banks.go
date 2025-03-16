@@ -19,18 +19,20 @@ import (
 	"github.com/volatiletech/sqlboiler/v4/queries"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
 	"github.com/volatiletech/sqlboiler/v4/queries/qmhelper"
+	"github.com/volatiletech/sqlboiler/v4/types"
 	"github.com/volatiletech/strmangle"
 )
 
 // UserBank is an object representing the database table.
 type UserBank struct {
 	// Auto Generate UUID V4
-	ID        string    `boil:"id" json:"id" toml:"id" yaml:"id"`
-	BankID    string    `boil:"bank_id" json:"bank_id" toml:"bank_id" yaml:"bank_id"`
-	UserID    string    `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
-	CreatedAt null.Time `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
-	UpdatedAt null.Time `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
-	IsActive  null.Bool `boil:"is_active" json:"is_active,omitempty" toml:"is_active" yaml:"is_active,omitempty"`
+	ID        string            `boil:"id" json:"id" toml:"id" yaml:"id"`
+	BankID    string            `boil:"bank_id" json:"bank_id" toml:"bank_id" yaml:"bank_id"`
+	UserID    string            `boil:"user_id" json:"user_id" toml:"user_id" yaml:"user_id"`
+	CreatedAt null.Time         `boil:"created_at" json:"created_at,omitempty" toml:"created_at" yaml:"created_at,omitempty"`
+	UpdatedAt null.Time         `boil:"updated_at" json:"updated_at,omitempty" toml:"updated_at" yaml:"updated_at,omitempty"`
+	IsActive  null.Bool         `boil:"is_active" json:"is_active,omitempty" toml:"is_active" yaml:"is_active,omitempty"`
+	Balance   types.NullDecimal `boil:"balance" json:"balance,omitempty" toml:"balance" yaml:"balance,omitempty"`
 
 	R *userBankR `boil:"-" json:"-" toml:"-" yaml:"-"`
 	L userBankL  `boil:"-" json:"-" toml:"-" yaml:"-"`
@@ -43,6 +45,7 @@ var UserBankColumns = struct {
 	CreatedAt string
 	UpdatedAt string
 	IsActive  string
+	Balance   string
 }{
 	ID:        "id",
 	BankID:    "bank_id",
@@ -50,6 +53,7 @@ var UserBankColumns = struct {
 	CreatedAt: "created_at",
 	UpdatedAt: "updated_at",
 	IsActive:  "is_active",
+	Balance:   "balance",
 }
 
 var UserBankTableColumns = struct {
@@ -59,6 +63,7 @@ var UserBankTableColumns = struct {
 	CreatedAt string
 	UpdatedAt string
 	IsActive  string
+	Balance   string
 }{
 	ID:        "user_banks.id",
 	BankID:    "user_banks.bank_id",
@@ -66,6 +71,7 @@ var UserBankTableColumns = struct {
 	CreatedAt: "user_banks.created_at",
 	UpdatedAt: "user_banks.updated_at",
 	IsActive:  "user_banks.is_active",
+	Balance:   "user_banks.balance",
 }
 
 // Generated where
@@ -77,6 +83,7 @@ var UserBankWhere = struct {
 	CreatedAt whereHelpernull_Time
 	UpdatedAt whereHelpernull_Time
 	IsActive  whereHelpernull_Bool
+	Balance   whereHelpertypes_NullDecimal
 }{
 	ID:        whereHelperstring{field: "\"user_banks\".\"id\""},
 	BankID:    whereHelperstring{field: "\"user_banks\".\"bank_id\""},
@@ -84,33 +91,34 @@ var UserBankWhere = struct {
 	CreatedAt: whereHelpernull_Time{field: "\"user_banks\".\"created_at\""},
 	UpdatedAt: whereHelpernull_Time{field: "\"user_banks\".\"updated_at\""},
 	IsActive:  whereHelpernull_Bool{field: "\"user_banks\".\"is_active\""},
+	Balance:   whereHelpertypes_NullDecimal{field: "\"user_banks\".\"balance\""},
 }
 
 // UserBankRels is where relationship names are stored.
 var UserBankRels = struct {
-	Bank                         string
-	User                         string
-	BankUserCurrentMonthBalances string
-	BankUserCurrentMonthIncomes  string
-	FromBankTransactions         string
-	ToBankTransactions           string
+	Bank                        string
+	User                        string
+	BankUserCurrentMonthBills   string
+	BankUserCurrentMonthIncomes string
+	FromBankTransactions        string
+	ToBankTransactions          string
 }{
-	Bank:                         "Bank",
-	User:                         "User",
-	BankUserCurrentMonthBalances: "BankUserCurrentMonthBalances",
-	BankUserCurrentMonthIncomes:  "BankUserCurrentMonthIncomes",
-	FromBankTransactions:         "FromBankTransactions",
-	ToBankTransactions:           "ToBankTransactions",
+	Bank:                        "Bank",
+	User:                        "User",
+	BankUserCurrentMonthBills:   "BankUserCurrentMonthBills",
+	BankUserCurrentMonthIncomes: "BankUserCurrentMonthIncomes",
+	FromBankTransactions:        "FromBankTransactions",
+	ToBankTransactions:          "ToBankTransactions",
 }
 
 // userBankR is where relationships are stored.
 type userBankR struct {
-	Bank                         *Bank                    `boil:"Bank" json:"Bank" toml:"Bank" yaml:"Bank"`
-	User                         *User                    `boil:"User" json:"User" toml:"User" yaml:"User"`
-	BankUserCurrentMonthBalances CurrentMonthBalanceSlice `boil:"BankUserCurrentMonthBalances" json:"BankUserCurrentMonthBalances" toml:"BankUserCurrentMonthBalances" yaml:"BankUserCurrentMonthBalances"`
-	BankUserCurrentMonthIncomes  CurrentMonthIncomeSlice  `boil:"BankUserCurrentMonthIncomes" json:"BankUserCurrentMonthIncomes" toml:"BankUserCurrentMonthIncomes" yaml:"BankUserCurrentMonthIncomes"`
-	FromBankTransactions         TransactionSlice         `boil:"FromBankTransactions" json:"FromBankTransactions" toml:"FromBankTransactions" yaml:"FromBankTransactions"`
-	ToBankTransactions           TransactionSlice         `boil:"ToBankTransactions" json:"ToBankTransactions" toml:"ToBankTransactions" yaml:"ToBankTransactions"`
+	Bank                        *Bank                   `boil:"Bank" json:"Bank" toml:"Bank" yaml:"Bank"`
+	User                        *User                   `boil:"User" json:"User" toml:"User" yaml:"User"`
+	BankUserCurrentMonthBills   CurrentMonthBillSlice   `boil:"BankUserCurrentMonthBills" json:"BankUserCurrentMonthBills" toml:"BankUserCurrentMonthBills" yaml:"BankUserCurrentMonthBills"`
+	BankUserCurrentMonthIncomes CurrentMonthIncomeSlice `boil:"BankUserCurrentMonthIncomes" json:"BankUserCurrentMonthIncomes" toml:"BankUserCurrentMonthIncomes" yaml:"BankUserCurrentMonthIncomes"`
+	FromBankTransactions        TransactionSlice        `boil:"FromBankTransactions" json:"FromBankTransactions" toml:"FromBankTransactions" yaml:"FromBankTransactions"`
+	ToBankTransactions          TransactionSlice        `boil:"ToBankTransactions" json:"ToBankTransactions" toml:"ToBankTransactions" yaml:"ToBankTransactions"`
 }
 
 // NewStruct creates a new relationship struct
@@ -132,11 +140,11 @@ func (r *userBankR) GetUser() *User {
 	return r.User
 }
 
-func (r *userBankR) GetBankUserCurrentMonthBalances() CurrentMonthBalanceSlice {
+func (r *userBankR) GetBankUserCurrentMonthBills() CurrentMonthBillSlice {
 	if r == nil {
 		return nil
 	}
-	return r.BankUserCurrentMonthBalances
+	return r.BankUserCurrentMonthBills
 }
 
 func (r *userBankR) GetBankUserCurrentMonthIncomes() CurrentMonthIncomeSlice {
@@ -164,9 +172,9 @@ func (r *userBankR) GetToBankTransactions() TransactionSlice {
 type userBankL struct{}
 
 var (
-	userBankAllColumns            = []string{"id", "bank_id", "user_id", "created_at", "updated_at", "is_active"}
+	userBankAllColumns            = []string{"id", "bank_id", "user_id", "created_at", "updated_at", "is_active", "balance"}
 	userBankColumnsWithoutDefault = []string{"bank_id", "user_id"}
-	userBankColumnsWithDefault    = []string{"id", "created_at", "updated_at", "is_active"}
+	userBankColumnsWithDefault    = []string{"id", "created_at", "updated_at", "is_active", "balance"}
 	userBankPrimaryKeyColumns     = []string{"id"}
 	userBankGeneratedColumns      = []string{}
 )
@@ -498,18 +506,18 @@ func (o *UserBank) User(mods ...qm.QueryMod) userQuery {
 	return Users(queryMods...)
 }
 
-// BankUserCurrentMonthBalances retrieves all the current_month_balance's CurrentMonthBalances with an executor via bank_users_id column.
-func (o *UserBank) BankUserCurrentMonthBalances(mods ...qm.QueryMod) currentMonthBalanceQuery {
+// BankUserCurrentMonthBills retrieves all the current_month_bill's CurrentMonthBills with an executor via bank_user_id column.
+func (o *UserBank) BankUserCurrentMonthBills(mods ...qm.QueryMod) currentMonthBillQuery {
 	var queryMods []qm.QueryMod
 	if len(mods) != 0 {
 		queryMods = append(queryMods, mods...)
 	}
 
 	queryMods = append(queryMods,
-		qm.Where("\"current_month_balance\".\"bank_users_id\"=?", o.ID),
+		qm.Where("\"current_month_bills\".\"bank_user_id\"=?", o.ID),
 	)
 
-	return CurrentMonthBalances(queryMods...)
+	return CurrentMonthBills(queryMods...)
 }
 
 // BankUserCurrentMonthIncomes retrieves all the current_month_income's CurrentMonthIncomes with an executor via bank_user_id column.
@@ -794,9 +802,9 @@ func (userBankL) LoadUser(ctx context.Context, e boil.ContextExecutor, singular 
 	return nil
 }
 
-// LoadBankUserCurrentMonthBalances allows an eager lookup of values, cached into the
+// LoadBankUserCurrentMonthBills allows an eager lookup of values, cached into the
 // loaded structs of the objects. This is for a 1-M or N-M relationship.
-func (userBankL) LoadBankUserCurrentMonthBalances(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUserBank interface{}, mods queries.Applicator) error {
+func (userBankL) LoadBankUserCurrentMonthBills(ctx context.Context, e boil.ContextExecutor, singular bool, maybeUserBank interface{}, mods queries.Applicator) error {
 	var slice []*UserBank
 	var object *UserBank
 
@@ -849,8 +857,8 @@ func (userBankL) LoadBankUserCurrentMonthBalances(ctx context.Context, e boil.Co
 	}
 
 	query := NewQuery(
-		qm.From(`current_month_balance`),
-		qm.WhereIn(`current_month_balance.bank_users_id in ?`, argsSlice...),
+		qm.From(`current_month_bills`),
+		qm.WhereIn(`current_month_bills.bank_user_id in ?`, argsSlice...),
 	)
 	if mods != nil {
 		mods.Apply(query)
@@ -858,22 +866,22 @@ func (userBankL) LoadBankUserCurrentMonthBalances(ctx context.Context, e boil.Co
 
 	results, err := query.QueryContext(ctx, e)
 	if err != nil {
-		return errors.Wrap(err, "failed to eager load current_month_balance")
+		return errors.Wrap(err, "failed to eager load current_month_bills")
 	}
 
-	var resultSlice []*CurrentMonthBalance
+	var resultSlice []*CurrentMonthBill
 	if err = queries.Bind(results, &resultSlice); err != nil {
-		return errors.Wrap(err, "failed to bind eager loaded slice current_month_balance")
+		return errors.Wrap(err, "failed to bind eager loaded slice current_month_bills")
 	}
 
 	if err = results.Close(); err != nil {
-		return errors.Wrap(err, "failed to close results in eager load on current_month_balance")
+		return errors.Wrap(err, "failed to close results in eager load on current_month_bills")
 	}
 	if err = results.Err(); err != nil {
-		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for current_month_balance")
+		return errors.Wrap(err, "error occurred during iteration of eager loaded relations for current_month_bills")
 	}
 
-	if len(currentMonthBalanceAfterSelectHooks) != 0 {
+	if len(currentMonthBillAfterSelectHooks) != 0 {
 		for _, obj := range resultSlice {
 			if err := obj.doAfterSelectHooks(ctx, e); err != nil {
 				return err
@@ -881,10 +889,10 @@ func (userBankL) LoadBankUserCurrentMonthBalances(ctx context.Context, e boil.Co
 		}
 	}
 	if singular {
-		object.R.BankUserCurrentMonthBalances = resultSlice
+		object.R.BankUserCurrentMonthBills = resultSlice
 		for _, foreign := range resultSlice {
 			if foreign.R == nil {
-				foreign.R = &currentMonthBalanceR{}
+				foreign.R = &currentMonthBillR{}
 			}
 			foreign.R.BankUser = object
 		}
@@ -893,10 +901,10 @@ func (userBankL) LoadBankUserCurrentMonthBalances(ctx context.Context, e boil.Co
 
 	for _, foreign := range resultSlice {
 		for _, local := range slice {
-			if local.ID == foreign.BankUsersID {
-				local.R.BankUserCurrentMonthBalances = append(local.R.BankUserCurrentMonthBalances, foreign)
+			if local.ID == foreign.BankUserID {
+				local.R.BankUserCurrentMonthBills = append(local.R.BankUserCurrentMonthBills, foreign)
 				if foreign.R == nil {
-					foreign.R = &currentMonthBalanceR{}
+					foreign.R = &currentMonthBillR{}
 				}
 				foreign.R.BankUser = local
 				break
@@ -1340,23 +1348,23 @@ func (o *UserBank) SetUser(ctx context.Context, exec boil.ContextExecutor, inser
 	return nil
 }
 
-// AddBankUserCurrentMonthBalances adds the given related objects to the existing relationships
+// AddBankUserCurrentMonthBills adds the given related objects to the existing relationships
 // of the user_bank, optionally inserting them as new records.
-// Appends related to o.R.BankUserCurrentMonthBalances.
+// Appends related to o.R.BankUserCurrentMonthBills.
 // Sets related.R.BankUser appropriately.
-func (o *UserBank) AddBankUserCurrentMonthBalances(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*CurrentMonthBalance) error {
+func (o *UserBank) AddBankUserCurrentMonthBills(ctx context.Context, exec boil.ContextExecutor, insert bool, related ...*CurrentMonthBill) error {
 	var err error
 	for _, rel := range related {
 		if insert {
-			rel.BankUsersID = o.ID
+			rel.BankUserID = o.ID
 			if err = rel.Insert(ctx, exec, boil.Infer()); err != nil {
 				return errors.Wrap(err, "failed to insert into foreign table")
 			}
 		} else {
 			updateQuery := fmt.Sprintf(
-				"UPDATE \"current_month_balance\" SET %s WHERE %s",
-				strmangle.SetParamNames("\"", "\"", 1, []string{"bank_users_id"}),
-				strmangle.WhereClause("\"", "\"", 2, currentMonthBalancePrimaryKeyColumns),
+				"UPDATE \"current_month_bills\" SET %s WHERE %s",
+				strmangle.SetParamNames("\"", "\"", 1, []string{"bank_user_id"}),
+				strmangle.WhereClause("\"", "\"", 2, currentMonthBillPrimaryKeyColumns),
 			)
 			values := []interface{}{o.ID, rel.ID}
 
@@ -1369,21 +1377,21 @@ func (o *UserBank) AddBankUserCurrentMonthBalances(ctx context.Context, exec boi
 				return errors.Wrap(err, "failed to update foreign table")
 			}
 
-			rel.BankUsersID = o.ID
+			rel.BankUserID = o.ID
 		}
 	}
 
 	if o.R == nil {
 		o.R = &userBankR{
-			BankUserCurrentMonthBalances: related,
+			BankUserCurrentMonthBills: related,
 		}
 	} else {
-		o.R.BankUserCurrentMonthBalances = append(o.R.BankUserCurrentMonthBalances, related...)
+		o.R.BankUserCurrentMonthBills = append(o.R.BankUserCurrentMonthBills, related...)
 	}
 
 	for _, rel := range related {
 		if rel.R == nil {
-			rel.R = &currentMonthBalanceR{
+			rel.R = &currentMonthBillR{
 				BankUser: o,
 			}
 		} else {

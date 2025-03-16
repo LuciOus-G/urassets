@@ -7,8 +7,9 @@ var TableNames = struct {
 	Banks                   string
 	CryptoAssetsHistory     string
 	CryptoAssetsTotal       string
-	CurrentMonthBalance     string
+	CurrentMonthBills       string
 	CurrentMonthIncome      string
+	CurrentMonthWealth      string
 	DefaultExpensesCategory string
 	DefaultIncomeCategory   string
 	Goals                   string
@@ -24,8 +25,9 @@ var TableNames = struct {
 	Banks:                   "banks",
 	CryptoAssetsHistory:     "crypto_assets_history",
 	CryptoAssetsTotal:       "crypto_assets_total",
-	CurrentMonthBalance:     "current_month_balance",
+	CurrentMonthBills:       "current_month_bills",
 	CurrentMonthIncome:      "current_month_income",
+	CurrentMonthWealth:      "current_month_wealth",
 	DefaultExpensesCategory: "default_expenses_category",
 	DefaultIncomeCategory:   "default_income_category",
 	Goals:                   "goals",

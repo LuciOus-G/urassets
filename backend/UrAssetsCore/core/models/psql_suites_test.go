@@ -12,9 +12,11 @@ func TestUpsert(t *testing.T) {
 
 	t.Run("CryptoAssetsTotals", testCryptoAssetsTotalsUpsert)
 
-	t.Run("CurrentMonthBalances", testCurrentMonthBalancesUpsert)
+	t.Run("CurrentMonthBills", testCurrentMonthBillsUpsert)
 
 	t.Run("CurrentMonthIncomes", testCurrentMonthIncomesUpsert)
+
+	t.Run("CurrentMonthWealths", testCurrentMonthWealthsUpsert)
 
 	t.Run("DefaultExpensesCategories", testDefaultExpensesCategoriesUpsert)
 

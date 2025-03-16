@@ -2,14 +2,18 @@ package service
 
 import (
 	"fmt"
+	"github.com/ericlagergren/decimal"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jinzhu/copier"
 	"github.com/lucious/urassets/UrAssetsCore/core/models"
 	"github.com/lucious/urassets/UrAssetsCore/core/request"
 	"github.com/lucious/urassets/UrAssetsCore/core/response"
 	"github.com/lucious/urassets/Utilities"
+	"github.com/volatiletech/null/v8"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 	"github.com/volatiletech/sqlboiler/v4/queries/qm"
+	"github.com/volatiletech/sqlboiler/v4/types"
+	"time"
 )
 
 func (srv Services) UserRegister(c *fiber.Ctx, MasterUser *request.UserRegisterRequest) (err error) {
@@ -36,11 +40,37 @@ func (srv Services) UserRegister(c *fiber.Ctx, MasterUser *request.UserRegisterR
 		return srvResponse.BadRequest()
 	}
 
-	// create step initialization
+	// create all important relationship initialization
 	newUserSteps := models.UserStep{
 		UserID: NewUser.ID,
 	}
 	err = newUserSteps.Insert(srv.Ctx, srv.DB, boil.Infer())
+	if err != nil {
+		srvResponse.Log.Info(err)
+		srvResponse.Err = err
+		return srvResponse.BadRequest()
+	}
+
+	totalWealth := models.TotalWealth{
+		UserID:  NewUser.ID,
+		Balance: types.NewDecimal(decimal.New(0, 2)),
+	}
+	err = totalWealth.Insert(srv.Ctx, srv.DB, boil.Infer())
+	if err != nil {
+		srvResponse.Log.Info(err)
+		srvResponse.Err = err
+		return srvResponse.BadRequest()
+	}
+
+	currenMonthWealth := models.CurrentMonthWealth{
+		UsersID: NewUser.ID,
+		Balance: types.NewDecimal(decimal.New(0, 2)),
+		PeriodMonth: null.Time{
+			Time:  time.Now(),
+			Valid: true,
+		},
+	}
+	err = currenMonthWealth.Insert(srv.Ctx, srv.DB, boil.Infer())
 	if err != nil {
 		srvResponse.Log.Info(err)
 		srvResponse.Err = err
