@@ -33,7 +33,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           isActive={activeRoute === "summary"}
           onClick={() => {
               handleNavigation("summary")
-              router.push("/summary")
+              router.push("/dashboard/summary")
             }
           }
         />
@@ -44,7 +44,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           isActive={activeRoute === "accounts"}
           onClick={() => {
               handleNavigation("accounts")
-              router.push("/accounts")
+              router.push("/dashboard/accounts")
             }
           }
         />
@@ -55,7 +55,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           isActive={activeRoute === "bank"}
           onClick={() => {
             handleNavigation("bank")
-            router.push("/bank-accounts")
+            router.push("/dashboard/bank-accounts")
           }}
         />
 
@@ -65,7 +65,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           isActive={activeRoute === "budget"}
           onClick={() => {
             handleNavigation("budget")
-            router.push("/budgeting")
+            router.push("/dashboard/budgeting")
           }}
         />
 
@@ -75,7 +75,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           isActive={activeRoute === "goals"}
           onClick={() => {
             handleNavigation("goals")
-            router.push("/goals")
+            router.push("/dashboard/goals")
           }}
         />
 
@@ -85,7 +85,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
           isActive={activeRoute === "transactions"}
           onClick={() => {
             handleNavigation("transactions")
-            router.push("/transactions")
+            router.push("/dashboard/transactions")
           }}
         />
 
