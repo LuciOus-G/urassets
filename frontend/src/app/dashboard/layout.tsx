@@ -7,12 +7,13 @@ import {PuffLoader} from "react-spinners";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const token = sessionStorage.getItem("UserData");
 
         if (!token) {
+            router.push("/login");
         } else {
             setIsLoading(false)
         }

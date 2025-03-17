@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
         source: "/api/pairs",
         destination: process.env.INDODAX_API,
       },
+      {
+        source: "/user/login",
+        destination: `${process.env.BACKEND_LOCAL}/user/login`,
+      },
     ];
   },
 
@@ -16,7 +20,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/",
-        destination: "/summary",
+        destination: "/dashboard/summary",
         permanent: true,
       },
     ];

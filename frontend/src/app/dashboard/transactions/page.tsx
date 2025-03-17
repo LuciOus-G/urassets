@@ -2,7 +2,7 @@
 import {Plus, ChevronDown, Pencil} from "lucide-react";
 import Modal from "@/components/modal";
 import {Dispatch, SetStateAction, useState} from "react";
-import {showToast} from "@/components/toast";
+import toast from "react-hot-toast";
 
 type bankList = {
   id: string
@@ -116,7 +116,7 @@ export default function Page() {
 
   // methods
   const onHandleModalSave = () => {
-    showToast.success("success")
+    toast.success('Successfully toasted!')
 
     setTimeout(() => {
       setIsModalOpen(false); // Close the modal after a short delay

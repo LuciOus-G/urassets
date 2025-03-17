@@ -20,6 +20,7 @@ type ConfigField struct {
 // Config Load data for all config
 func Config() (config ConfigField, err error) {
 	ConfigPath, err := filepath.Abs(".")
+	viper.AddConfigPath(ConfigPath + "/backend")
 	viper.AddConfigPath(ConfigPath)
 	viper.AddConfigPath("$HOME/.ur/backend")
 	viper.SetConfigFile(".env")
