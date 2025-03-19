@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
         source: "/user/login",
         destination: `${process.env.BACKEND_LOCAL}/user/login`,
       },
+      {
+        source: "/user/register",
+        destination: `${process.env.BACKEND_LOCAL}/user/register`,
+      },
     ];
   },
 

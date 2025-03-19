@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {cn} from "@/lib/utils";
 import Error from "next/error";
+import {RegisterService} from "@/services/register.services";
 
 
 const RegisterSchema = z.object({
@@ -38,15 +39,15 @@ export default function Login() {
         defaultValues: {
             email: "",
             password: "",
+            phoneNumber: ""
         },
     });
 
-    const handleOnLogin = (data: RegisterFormData) => {
+    const handleOnRegister = (data: RegisterFormData) => {
         toast.promise(
-            LoginService({email: data.email, password: data.password}).then((r) => {
-                if (r.status === 200) {
-                    sessionStorage.setItem("UserData", JSON.stringify(r))
-                    router.push("/dashboard/summary")
+            RegisterService({Email: data.email, Password: data.password, PhoneNumber: data.phoneNumber}).then((r) => {
+                if (r.status === 201) {
+                    router.push("/login")
                 } else {
                     throw new Error(r.error);
                 }
@@ -54,8 +55,8 @@ export default function Login() {
                 throw new Error(err.props);
             }),
             {
-                loading: 'Logging...',
-                success: <b>Login</b>,
+                loading: 'Registering...',
+                success: <b>Success Registering</b>,
                 error: (err) => <b>{err.props}</b>,
             }
         );
@@ -98,7 +99,7 @@ export default function Login() {
                         <button className="pb-2 px-4 font-medium border-b-2 border-black">Register</button>
                     </div>
 
-                    <form onSubmit={handleSubmit(handleOnLogin)}>
+                    <form onSubmit={handleSubmit(handleOnRegister)}>
                         <div className="relative mb-6">
                             <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                                 <Mail className="h-5 w-5 text-gray-400" />

@@ -1,9 +1,9 @@
 package request
 
 type UserRegisterRequest struct {
-	PhoneNumber string `json:"phone_number" validate:"required,min=10,max=13"`
-	Email       string `json:"email" validate:"required"`
-	Password    string `json:"password" validate:"required"`
+	PhoneNumber string `validate:"required,min=10,max=13"`
+	Email       string `validate:"required"`
+	Password    string `validate:"required"`
 }
 
 type UserLoginRequest struct {
